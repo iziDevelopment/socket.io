@@ -1,0 +1,38 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>socket.io</title>
+    <link rel="stylesheet" href="/style.css">
+</head>
+<body>
+<h1>Get GitHub Repositories</h1>
+<input type="text" id="username" placeholder="GitHub Username">
+<button onclick="getRepos()">Get Repositories</button>
+<ul id="repositories"></ul>
+
+<script src="/socket.io/socket.io.js"></script>
+<script>
+    const socket = io()
+
+    function getRepos() {
+        const username = document.getElementById('username').value
+        socket.emit('getRepositories', username)
+    }
+
+    socket.on('repositories', (repos) => {
+        const reposList = document.getElementById('repositories')
+        reposList.innerHTML = ''
+        repos.forEach((repo) => {
+            const listItem = document.createElement('li')
+            const link = document.createElement('a')
+            link.setAttribute('target', '_blank')
+            link.href = repo.url
+            link.textContent = repo.name
+            listItem.appendChild(link)
+            reposList.appendChild(listItem)
+        })
+    })
+</script>
+</body>
+</html>
